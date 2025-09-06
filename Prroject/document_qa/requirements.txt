@@ -1,0 +1,12 @@
+streamlit
+openai
+faiss-cpu
+chromadb
+sentence-transformers
+pdfplumber
+PyMuPDF
+pdfminer.six
+markdown
+html2text
+beautifulsoup4
+readability-lxml
