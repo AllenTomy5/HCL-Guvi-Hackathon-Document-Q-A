@@ -1,15 +1,27 @@
 """
 LLM interface module.
-Handles calls to LLMs like OpenAI GPT, Claude, etc.
+Handles calls to local LLMs via Ollama REST API.
 """
 
-def ask_llm(prompt):
+import requests
+
+def ask_llm(prompt, model="mistral"):
     """
-    Call the LLM API with the given prompt and return the response.
+    Call the local Ollama LLM API with the given prompt and return the response.
     Args:
         prompt (str): The prompt to send to the LLM
+        model (str): The model to use (default: mistral)
     Returns:
         str: LLM-generated answer
     """
-    # TODO: Integrate with OpenAI, Claude, etc.
-    pass
+    url = "http://localhost:11434/api/generate"
+    data = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False
+    }
+    response = requests.post(url, json=data)
+    if response.status_code != 200:
+        raise Exception(f"Ollama API error: {response.status_code} {response.text}")
+    result = response.json()
+    return result.get("response", "[Error: No response from LLM]")
