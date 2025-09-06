@@ -3,6 +3,12 @@ Embedding module.
 Handles embedding generation for text chunks and queries.
 """
 
+
+from sentence_transformers import SentenceTransformer
+
+# Load the model once (you can change the model name as needed)
+_model = SentenceTransformer('all-MiniLM-L6-v2')
+
 def embed_chunks(chunks):
     """
     Generate embeddings for a list of text chunks.
@@ -11,8 +17,8 @@ def embed_chunks(chunks):
     Returns:
         List[List[float]]: List of embeddings
     """
-    # TODO: Integrate with OpenAI, HuggingFace, etc.
-    pass
+    return _model.encode(chunks, show_progress_bar=False).tolist()
+
 
 def embed_query(query):
     """
@@ -22,5 +28,4 @@ def embed_query(query):
     Returns:
         List[float]: Query embedding
     """
-    # TODO: Integrate with embedding model
-    pass
+    return _model.encode([query])[0].tolist()

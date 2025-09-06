@@ -13,5 +13,6 @@ def retrieve_relevant_chunks(query_embedding, vector_store, top_k=5):
     Returns:
         List[str]: Top relevant text chunks
     """
-    # TODO: Call vector_store.search and return results
-    pass
+    # Call the vector store's search method to get top-k relevant chunks
+    results = vector_store.search(query_embedding, top_k=top_k)
+    return results

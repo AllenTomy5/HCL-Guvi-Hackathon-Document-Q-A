@@ -13,5 +13,25 @@ def generate_answer(question, context_chunks):
     Returns:
         Tuple[str, List[str]]: (Answer, List of references)
     """
-    # TODO: Format prompt, call LLM, extract references
-    pass
+    if not context_chunks:
+        return "Sorry, I couldn't find relevant information in the document.", []
+
+    # Combine the top context chunks into a single context string
+    context = "\n\n".join(context_chunks)
+
+    # Format the prompt for the LLM
+    prompt = (
+        "You are an expert assistant. Use ONLY the context below to answer the user's question. "
+        "If the answer is not in the context, say you don't know.\n\n"
+        f"Context:\n{context}\n\n"
+        f"Question: {question}\n\n"
+        "Answer:"
+    )
+
+    # Call the LLM
+    answer = ask_llm(prompt)
+
+    # Optionally, provide references (here, just the first 2 chunks as a simple example)
+    references = [chunk[:200] + "..." if len(chunk) > 200 else chunk for chunk in context_chunks[:2]]
+
+    return answer, references
