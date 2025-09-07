@@ -34,13 +34,16 @@ class VectorStore:
     def search(self, query_embedding, top_k=5):
         """
         Retrieve top-k most similar chunks for a query embedding.
+        Returns list of tuples: (chunk, similarity_score)
         """
         if self.index is None or self.embeddings is None or len(self.chunks) == 0:
             return []
         query = np.array(query_embedding).astype('float32').reshape(1, -1)
         distances, indices = self.index.search(query, top_k)
         results = []
-        for idx in indices[0]:
+        for i, idx in enumerate(indices[0]):
             if idx < len(self.chunks):
-                results.append(self.chunks[idx])
+                # Convert distance to similarity score (lower distance = higher similarity)
+                similarity = 1.0 / (1.0 + distances[0][i])
+                results.append((self.chunks[idx], similarity))
         return results

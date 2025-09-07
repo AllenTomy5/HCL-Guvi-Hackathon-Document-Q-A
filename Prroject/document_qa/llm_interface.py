@@ -5,12 +5,12 @@ Handles calls to local LLMs via Ollama REST API.
 
 import requests
 
-def ask_llm(prompt, model="mistral"):
+def ask_llm(prompt, model="llama3.2:3b"):
     """
     Call the local Ollama LLM API with the given prompt and return the response.
     Args:
         prompt (str): The prompt to send to the LLM
-        model (str): The model to use (default: mistral)
+        model (str): The model to use (default: llama3.2:3b)
     Returns:
         str: LLM-generated answer
     """

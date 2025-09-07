@@ -10,3 +10,6 @@ markdown
 html2text
 beautifulsoup4
 readability-lxml
+plotly
+pandas
+requests
