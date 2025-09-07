@@ -531,6 +531,14 @@ with st.sidebar:
     
     # LLM Status
     available_llms = check_llm_availability()
+    
+    # Debug info
+    st.write("🔍 Debug Info:")
+    st.write(f"Environment OPENAI_API_KEY: {'Set' if os.getenv('OPENAI_API_KEY') else 'Not set'}")
+    st.write(f"Environment HUGGINGFACE_API_KEY: {'Set' if os.getenv('HUGGINGFACE_API_KEY') else 'Not set'}")
+    st.write(f"Secrets OPENAI_API_KEY: {'Set' if st.secrets.get('OPENAI_API_KEY') else 'Not set'}")
+    st.write(f"Secrets HUGGINGFACE_API_KEY: {'Set' if st.secrets.get('HUGGINGFACE_API_KEY') else 'Not set'}")
+    
     if available_llms:
         st.success(f"✅ Connected to: {', '.join(available_llms)}")
     else:
