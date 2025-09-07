@@ -18,7 +18,7 @@ def ask_llm_cloud(prompt, model="gpt-3.5-turbo"):
     Call cloud-based LLM APIs with smart fallback
     """
     # Try OpenAI first
-    openai_key = os.getenv("OPENAI_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY")
     if openai_key:
         try:
             return ask_openai(prompt, model, openai_key)
@@ -26,7 +26,7 @@ def ask_llm_cloud(prompt, model="gpt-3.5-turbo"):
             pass
     
     # Try Hugging Face
-    hf_key = os.getenv("HUGGINGFACE_API_KEY")
+    hf_key = os.getenv("HUGGINGFACE_API_KEY") or st.secrets.get("HUGGINGFACE_API_KEY")
     if hf_key:
         try:
             return ask_huggingface(prompt, hf_key)
@@ -98,9 +98,9 @@ def check_llm_availability():
     """Check which LLM services are available"""
     available = []
     
-    if os.getenv("OPENAI_API_KEY"):
+    if os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY"):
         available.append("OpenAI")
-    if os.getenv("HUGGINGFACE_API_KEY"):
+    if os.getenv("HUGGINGFACE_API_KEY") or st.secrets.get("HUGGINGFACE_API_KEY"):
         available.append("Hugging Face")
     
     # Check Ollama
