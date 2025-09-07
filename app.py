@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 from ingestion import parse_document
 from chunking import chunk_text
 from embedding import embed_chunks, embed_query
@@ -12,6 +13,9 @@ from vector_store import VectorStore
 from retrieval import retrieve_relevant_chunks
 from rag_pipeline import generate_answer
 from llm_interface_cloud import ask_llm, check_api_availability
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Page configuration
 st.set_page_config(
