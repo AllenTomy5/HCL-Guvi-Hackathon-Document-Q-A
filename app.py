@@ -48,7 +48,7 @@ def ask_llm_cloud(prompt, model="gpt-3.5-turbo"):
         pass
     
     # Fallback to demo response
-    return f"🤖 [Demo Mode] Here's a sample response to your question: {prompt[:100]}...\n\nNote: Add API keys (OpenAI or Hugging Face) for full AI functionality, or run locally with Ollama."
+    return f"🤖 [Demo Mode] Here's a sample response to your question: {prompt[:100]}...\n\n💡 To get real AI responses:\n• Add API keys (OpenAI, Replicate, or Hugging Face) in Streamlit Cloud settings\n• Or run locally with Ollama for free AI functionality"
 
 def ask_openai(prompt, model, api_key):
     """Call OpenAI API"""
@@ -584,17 +584,10 @@ with st.sidebar:
     # LLM Status
     available_llms = check_llm_availability()
     
-    # Debug info
-    st.write("🔍 Debug Info:")
-    st.write(f"Environment OPENAI_API_KEY: {'Set' if os.getenv('OPENAI_API_KEY') else 'Not set'}")
-    st.write(f"Environment HUGGINGFACE_API_KEY: {'Set' if os.getenv('HUGGINGFACE_API_KEY') else 'Not set'}")
-    st.write(f"Secrets OPENAI_API_KEY: {'Set' if st.secrets.get('OPENAI_API_KEY') else 'Not set'}")
-    st.write(f"Secrets HUGGINGFACE_API_KEY: {'Set' if st.secrets.get('HUGGINGFACE_API_KEY') else 'Not set'}")
-    
     if available_llms:
         st.success(f"✅ Connected to: {', '.join(available_llms)}")
     else:
-        st.warning("⚠️ Running in demo mode. Add API keys for full functionality.")
+        st.warning("⚠️ Running in demo mode. For full AI functionality, add API keys (OpenAI, Replicate, or Hugging Face) or run locally with Ollama.")
     
     # AI Model selection
     model_options = []
