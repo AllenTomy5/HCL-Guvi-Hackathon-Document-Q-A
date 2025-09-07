@@ -65,18 +65,37 @@ def ask_openai(prompt, model, api_key):
 
 def ask_huggingface(prompt, api_key):
     """Call Hugging Face API"""
-    url = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
-    headers = {"Authorization": f"Bearer {api_key}"}
-    data = {"inputs": prompt}
+    # Try multiple models in order of preference
+    models = [
+        "microsoft/DialoGPT-small",
+        "distilbert-base-uncased", 
+        "gpt2"
+    ]
     
-    response = requests.post(url, headers=headers, json=data, timeout=30)
-    if response.status_code == 200:
-        result = response.json()
-        if isinstance(result, list) and len(result) > 0:
-            return result[0].get("generated_text", "No response generated")
-        return str(result)
-    else:
-        raise Exception(f"Hugging Face API error: {response.status_code}")
+    for model in models:
+        try:
+            url = f"https://api-inference.huggingface.co/models/{model}"
+            headers = {"Authorization": f"Bearer {api_key}"}
+            data = {"inputs": prompt}
+            
+            response = requests.post(url, headers=headers, json=data, timeout=30)
+            if response.status_code == 200:
+                result = response.json()
+                if isinstance(result, list) and len(result) > 0:
+                    return result[0].get("generated_text", "No response generated")
+                return str(result)
+            elif response.status_code == 503:
+                # Model is loading, try next one
+                continue
+            else:
+                # Try next model
+                continue
+        except:
+            # Try next model
+            continue
+    
+    # If all models fail, return a helpful message
+    return f"🤖 [Hugging Face] I understand your question: '{prompt[:100]}...' However, I'm having trouble accessing the AI models right now. Please try again in a moment, or the models might be loading."
 
 def ask_ollama(prompt):
     """Call local Ollama API"""
