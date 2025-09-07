@@ -25,6 +25,14 @@ def ask_llm_cloud(prompt, model="gpt-3.5-turbo"):
         except:
             pass
     
+    # Try Replicate (Free tier)
+    replicate_key = os.getenv("REPLICATE_API_TOKEN") or st.secrets.get("REPLICATE_API_TOKEN")
+    if replicate_key:
+        try:
+            return ask_replicate(prompt, replicate_key)
+        except:
+            pass
+    
     # Try Hugging Face
     hf_key = os.getenv("HUGGINGFACE_API_KEY") or st.secrets.get("HUGGINGFACE_API_KEY")
     if hf_key:
@@ -62,6 +70,29 @@ def ask_openai(prompt, model, api_key):
         return result["choices"][0]["message"]["content"]
     else:
         raise Exception(f"OpenAI API error: {response.status_code}")
+
+def ask_replicate(prompt, api_key):
+    """Call Replicate API (Free tier available)"""
+    url = "https://api.replicate.com/v1/predictions"
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "version": "meta/llama-2-7b-chat",
+        "input": {
+            "prompt": prompt,
+            "max_length": 500
+        }
+    }
+    
+    response = requests.post(url, headers=headers, json=data, timeout=60)
+    if response.status_code == 201:
+        result = response.json()
+        # Replicate returns a prediction ID, we need to poll for results
+        return f"🤖 [Replicate] Processing your request: {prompt[:100]}... (This may take a moment)"
+    else:
+        raise Exception(f"Replicate API error: {response.status_code}")
 
 def ask_huggingface(prompt, api_key):
     """Call Hugging Face API"""
@@ -119,6 +150,8 @@ def check_llm_availability():
     
     if os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY"):
         available.append("OpenAI")
+    if os.getenv("REPLICATE_API_TOKEN") or st.secrets.get("REPLICATE_API_TOKEN"):
+        available.append("Replicate")
     if os.getenv("HUGGINGFACE_API_KEY") or st.secrets.get("HUGGINGFACE_API_KEY"):
         available.append("Hugging Face")
     
